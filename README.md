@@ -1,7 +1,7 @@
 # ds-shellprogs
 
 ## There is a repository with many of dinoslavik's shell programs
-<p font-size=9> I recommend firstly check DISCLAIMER.md </p>
+I recommend firstly check [DISCLAIMER.md](https://github.com/DinoSlavik/ds-shellprogs/blob/main/DISCLAIMER.md)
 
 ### List of programs:
   * [ds-updatesys](https://github.com/DinoSlavik/ds-shellprogs/tree/main/ds-updatesys) - updates Debian-based distros
