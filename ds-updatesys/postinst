@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+touch /etc/systemd/system/ds-updatesys.service
+echo "[Unit]" > /etc/systemd/system/ds-updatesys.service
+echo "Description=Auto <apt update> at startup" >> /etc/systemd/system/ds-updatesys.service
+echo "After=default.target" >> /etc/systemd/system/ds-updatesys.service
+echo "[Service]" >> /etc/systemd/system/ds-updatesys.service
+echo "ExecStart=/usr/bin/ds-updatesys" >> /etc/systemd/system/ds-updatesys.service
+echo "[Install]" >> /etc/systemd/system/ds-updatesys.service
+echo "WantedBy=default.target" >> /etc/systemd/system/ds-updatesys.service
+
+systemctl enable ds-updatesys.service
+
+exit 0
