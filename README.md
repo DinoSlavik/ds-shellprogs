@@ -5,4 +5,4 @@ I recommend firstly check [DISCLAIMER.md](https://github.com/DinoSlavik/ds-shell
 
 ### List of programs:
   * [ds-updatesys](https://github.com/DinoSlavik/ds-shellprogs/tree/main/ds-updatesys) - updates Debian-based distros
-  * ds-progslist - list of all programs (parameter -i (--installed) makes it list with only installed programs)
+  * ds-progslist - list of all ds-shell programs (parameter -i (--installed) makes it list with only installed programs)
