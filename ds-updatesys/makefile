@@ -1,49 +1,74 @@
-# Variables 
+###  Variables 
 PACKAGE_NAME := ds-updatesys
 BASH_SCRIPT_NAME := updater.sh
-PACKAGE_VERSION := 1.2.0.19
+PACKAGE_VERSION := 1.2.0.35
 DEB_PACKAGE := $(PACKAGE_NAME)_$(PACKAGE_VERSION).deb
 LICENSE_FILE := LICENSE.md
 
-# Rule for build DEB-package
-deb: $(BASH_UPDATER_NAME)
-	mkdir -p $(PACKAGE_NAME)/usr/bin $(PACKAGE_NAME)/usr/share $(PACKAGE_NAME)/DEBIAN
-	cp $(BASH_SCRIPT_NAME) $(PACKAGE_NAME)/usr/share/$(PACKAGE_NAME).sh
-	chmod +x $(PACKAGE_NAME)/usr/share/$(PACKAGE_NAME).sh
-	ln -sf $(PACKAGE_NAME)/usr/share/$(PACKAGE_NAME).sh $(PACKAGE_NAME)/usr/bin/$(PACKAGE_NAME)
-	echo "Source: $(PACKAGE_NAME)" > $(PACKAGE_NAME)/DEBIAN/control
-	echo "Package: $(PACKAGE_NAME)" >> $(PACKAGE_NAME)/DEBIAN/control
-	echo "Version: $(PACKAGE_VERSION)" >> $(PACKAGE_NAME)/DEBIAN/control
-	echo "Section: utils" >> $(PACKAGE_NAME)/DEBIAN/control
-	echo "Homepage: https://github.com/DinoSlavik/ds-shellprogs" >> $(PACKAGE_NAME)/DEBIAN/control
-	echo "Architecture: all" >> $(PACKAGE_NAME)/DEBIAN/control
-	echo "Essential: no" >> $(PACKAGE_NAME)/DEBIAN/control
-	echo "Installed-Size: 14" >> $(PACKAGE_NAME)/DEBIAN/control
-	echo "Maintainer: Dino Slavik" >> $(PACKAGE_NAME)/DEBIAN/control
-	echo "Description: Simple system updater by Dino Slavik" >> $(PACKAGE_NAME)/DEBIAN/control
-	echo "License: GPL-3-0" >> $(PACKAGE_NAME)/DEBIAN/control
-	dpkg-deb --build $(PACKAGE_NAME)
-	mv $(PACKAGE_NAME).deb $(DEB_PACKAGE)
+## Control file variables
+CTRL_SOURCE := $(PACKAGE_NAME)
+CTRL_PACKAGE := $(PACKAGE_NAME)
+CTRL_VERSION := $(PACKAGE_VERSION)
+CTRL_SECTION := utils
+CTRL_HOMEPAGE := https://github.com/DinoSlavik/ds-shellprogs
+CTRL_ARCHITECTURE := all
+CTRL_ESSENTIAL := no
+CTRL_INSTALLED-SIZE := 13
+CTRL_MAINTAINER := Dino Slavik <dino.slavik@gmail.com>
+CTRL_DESCRIPTION := Simple debian system updater by Dino Slavik
+CTRL_LICENSE := GPL-3.0
+
+###  Rule for build DEB-package
+deb: $(BASH_SCRIPT_NAME)
+	# Create dirs
+	mkdir -p $(PACKAGE_NAME)/usr/bin
+	mkdir -p $(PACKAGE_NAME)/usr/share/ds-shellprogs
+	mkdir -p $(PACKAGE_NAME)/DEBIAN
+	# Add program to PATH
+	cp $(BASH_SCRIPT_NAME) $(PACKAGE_NAME)/usr/share/ds-shellprogs/$(PACKAGE_NAME).sh
+	chmod +x $(PACKAGE_NAME)/usr/share/ds-shellprogs/$(PACKAGE_NAME).sh
+	ln -sf /usr/share/ds-shellprogs/$(PACKAGE_NAME).sh $(PACKAGE_NAME)/usr/bin/$(PACKAGE_NAME)
+	# Create control file
+	echo "Source: $(CTRL_SOURCE)" > $(PACKAGE_NAME)/DEBIAN/control
+	echo "Package: $(CTRL_PACKAGE)" >> $(PACKAGE_NAME)/DEBIAN/control
+	echo "Version: $(CTRL_VERSION)" >> $(PACKAGE_NAME)/DEBIAN/control
+	echo "Section: $(CTRL_SECTION)" >> $(PACKAGE_NAME)/DEBIAN/control
+	echo "Homepage: $(CTRL_HOMEPAGE)" >> $(PACKAGE_NAME)/DEBIAN/control
+	echo "Architecture: $(CTRL_ARCHITECTURE)" >> $(PACKAGE_NAME)/DEBIAN/control
+	echo "Essential: $(CTRL_ESSENTIAL)" >> $(PACKAGE_NAME)/DEBIAN/control
+	echo "Installed-Size: $(CTRL_INSTALLED-SIZE)" >> $(PACKAGE_NAME)/DEBIAN/control
+	echo "Maintainer: $(CTRL_MAINTAINER)" >> $(PACKAGE_NAME)/DEBIAN/control
+	echo "Description: $(CTRL_DESCRIPTION)" >> $(PACKAGE_NAME)/DEBIAN/control
+	echo "License: $(CTRL_LICENSE)" >> $(PACKAGE_NAME)/DEBIAN/control
 	
-	# Post install script
+	## Post install script
+	# Add postinst to package folder
 	cp postinst $(PACKAGE_NAME)/DEBIAN/postinst
 	chmod +x $(PACKAGE_NAME)/DEBIAN/postinst
-	dpkg-deb --control $(DEB_PACKAGE) $(PACKAGE_NAME)/DEBIAN
+	# Add postinst link to md5sums
 	echo "postinst" >> $(PACKAGE_NAME)/DEBIAN/md5sums
-	dpkg-deb --build $(PACKAGE_NAME)
-	mv $(PACKAGE_NAME).deb $(DEB_PACKAGE)
 	
-	# Adding license to package (don't work...)
-	cp ../$(LICENSE_FILE) $(PACKAGE_NAME)/usr/share/$(LICENSE_FILE)
-	dpkg-deb --control $(DEB_PACKAGE) $(PACKAGE_NAME)/DEBIAN
+	## Adding license file to package (don't work...)
+	cp ../$(LICENSE_FILE) $(PACKAGE_NAME)/usr/share/ds-shellprogs/$(LICENSE_FILE)
 	echo "$(LICENSE_FILE)" >> $(PACKAGE_NAME)/DEBIAN/md5sums
+	# DEBIAN/copyright
+	echo "Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/" > $(PACKAGE_NAME)/DEBIAN/copyright
+	echo "Upstream-Name: ds-updatesys" >> $(PACKAGE_NAME)/DEBIAN/copyright
+	echo "Source: https://github.com/DinoSlavik/ds-shellprogs" >> $(PACKAGE_NAME)/DEBIAN/copyright
+	echo "\n" >> $(PACKAGE_NAME)/DEBIAN/copyright
+	echo "Files: *" >> $(PACKAGE_NAME)/DEBIAN/copyright
+	echo "Copyright: (c) 2023, Dino Slavik" >> $(PACKAGE_NAME)/DEBIAN/copyright
+	echo "License: GPL-3+" >> $(PACKAGE_NAME)/DEBIAN/copyright
+	
+	## Build deb package
 	dpkg-deb --build $(PACKAGE_NAME)
+	# Rename package name to $(DEB_PACKAGE)
 	mv $(PACKAGE_NAME).deb $(DEB_PACKAGE)
 	
-	# Clean rule in not clean rule...
+	## Clean rule in not clean rule...
 	rm -rf $(PACKAGE_NAME)
 
-# Clean rule
+### Clean rule
 clean:
 	rm -rf $(PACKAGE_NAME) 
 
